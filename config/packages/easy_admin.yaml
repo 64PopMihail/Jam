@@ -1,0 +1,5 @@
+
+easy_admin:
+    design:
+        form_theme:
+            - "@FOSCKEditor/Form/ckeditor_widget.html.twig"

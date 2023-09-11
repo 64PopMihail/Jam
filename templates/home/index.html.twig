@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('filter') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const minRange = "{{ minRange|escape('js') }}";
+        const maxRange = "{{ maxRange|escape('js') }}";
+        const minChoice = "{{ minChoice|escape('js') }}";
+        const maxChoice = "{{ maxChoice|escape('js') }}";
+    </script>
+    {{ encore_entry_script_tags('cart') }}
+    {{ encore_entry_script_tags('filter') }}
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="row mt-4">
+        <div class="col-12 mt-4" id="content">
+            <div class="row">
+                <div class="col-4">
+                    <form action="{{ path("home") }}">
+                        <input id="minHidden" type="hidden" name="minPrice" value="{{ minChoice }}">
+                        <input id="maxHidden" type="hidden" name="maxPrice" value="{{ maxChoice }}">
+
+                        <div class="my-5" id="slider"></div>
+                        <select name="filter">
+                            <option {% if app.request.get("filter")=="price_asc" %} selected {% endif %}
+                                    value="price_asc">Prix croissant
+                            </option>
+                            <option {% if app.request.get("filter")=="price_desc" %} selected {% endif %}
+                                    value="price_desc">Prix décroissant
+                            </option>
+                            <option {% if app.request.get("filter")=="name_asc" %} selected {% endif %}
+                                    value="name_asc">Alphabétique
+                            </option>
+                            <option {% if app.request.get("filter")=="name_desc" %} selected {% endif %}
+                                    value="name_desc">Alphabétique Z->A
+                            </option>
+                        </select>
+                        <br><br>
+                        {% for category in categories %}
+                            <div class="form-check">
+                                <input class="form-check-input" {% if category.id in app.request.get("category") %} checked {% endif %}
+                                       type="checkbox" name="category[]" value="{{ category.id }}"
+                                       id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    {{ category.name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                        <br>
+                        <button class="btn btn-dark" type="submit">
+                            FILTRER
+                        </button>
+
+                    </form>
+                </div>
+                <div class="col-8">
+                    <div class="row">
+                        {% for product in products %}
+                            <div class="m-2 col-3 m-22 card" product="{{ product.id }}">
+                                <img class="p-4 card-img-top" src="{{ asset("uploads/"~product.image) }}">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text">
+                                        {{ (product.price/100)|format_currency("EUR", locale="fr") }}
+                                    </p>
+                                    <div
+                                            class="row">
+                                        <form class="col" action="{{ path("addCart",{ id: product.id }) }}">
+
+                                            {% if app.session.get("cart")[product.id] is not defined %}
+
+                                                <input class="quantity form-control" name="quantity" type="number"
+                                                       value="1">
+                                                <button data-product="{{ product.id }}"
+                                                        class="mt-2 addCartButton btn btn-dark" type="submit">
+                                                    AJOUTER
+                                                </button>
+                                            {% else %}
+                                                <input class="quantity form-control" name="quantity" type="number"
+                                                       value="{{ app.session.get("cart")[product.id] }}">
+                                                <button data-product="{{ product.id }}"
+                                                        class="mt-2 addCartButton btn btn-dark" type="submit">
+                                                    MODIFIER
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

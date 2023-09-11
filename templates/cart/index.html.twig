@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+{% block title %}Panier
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('cart') }}
+{% endblock %}
+
+{% block body %}
+
+    {% if cart|length >0 %}
+        <div class="row">
+        {% set total = 0 %}
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-lg-8">
+                                <div class="p-5">
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <h1 class="fw-bold mb-0 text-black">Panier</h1>
+                                        <h6 class="mb-0 text-muted">{{ cart|length }}
+                                            produits</h6>
+                                    </div>
+                                    <hr class="my-4">
+                                    {% for product in cart %}
+                                        <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                            <div class="col-md-2 col-lg-2 col-xl-2">
+                                                <img src="{{ asset("uploads/"~product.image) }}"
+                                                     class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                            </div>
+                                            <div class="col-md-3 col-lg-3 col-xl-3">
+                                                <h6 class="text-muted">{{ product.name }}</h6>
+                                                {# <h6 class="text-black mb-0">Cotton T-shirt</h6> #}
+                                            </div>
+                                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex"
+                                                 product="{{ product.id }}">
+                                                <div>
+                                                    <span class="quantity fw-bold fs-4">{{ product.quantity }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-lg-2 col-xl-2 ">
+                                                <h6 class="mb-0">
+                                                    {{ (product.price/100)|format_currency("EUR", locale="fr") }}
+                                                </h6>
+
+                                            </div>
+                                            <div class="col-md-2 col-lg-2 col-xl-2 ">
+                                                <h6 class="mb-0">
+                                                    {{ (product.price/100* product.quantity)|format_currency("EUR", locale="fr") }}
+                                                </h6>
+                                                {% set total = total + product.price/100 * product.quantity %}
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+
+
+                                    <hr class="my-4">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 bg-grey">
+                                <div class="p-5">
+                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Synthèse</h3>
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h5 class="text-uppercase">Total</h5>
+                                        <h5>€
+                                            {{ total|format_currency("EUR", locale="fr") }}</h5>
+                                    </div>
+                                    <div class="row">
+                                        {% if not app.user %}
+                                            <div class="d-flex justify-content-between mb-4">
+
+                                                <p class="my-2 mx-3">Vous devez être connecté pour commander :</p>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-4">
+
+                                                <a href="{{ path('login') }}">
+                                                    <button type="button" class="btn btn-primary me-2">Connexion
+                                                    </button>
+                                                </a>
+                                                <a href="{{ path('register') }}">
+                                                    <button type="button" class="btn btn-warning">
+                                                        Inscription
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            <div class="d-flex justify-content-between mb-4">
+
+                                                <a class="m-5  btn btn-dark" {% if not app.user %} disabled="true" {% endif %}
+                                                   href="{{ path("checkout") }}" role="button"> VALIDER LE
+                                                    PANIER
+
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <p>Le panier est vide.</p>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
