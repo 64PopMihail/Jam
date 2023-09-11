@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}Recherche
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('filter') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{ encore_entry_script_tags('cart') }}
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="row mt-4">
+        <div class="col-12 mt-4" id="content">
+            <div class="row">
+
+                <div class="col-8">
+                    <div class="row">
+                        {% for product in products %}
+                            <div class="m-2 col-3 m-22 card" product="{{ product.id }}">
+                                <img class="p-4 card-img-top" src="{{ asset("uploads/"~product.image) }}">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text">
+                                        {{ (product.price/100)|format_currency("EUR", locale="fr") }}
+                                    </p>
+                                    <div
+                                            class="row">
+                                        <form class="col" action="{{ path("addCart",{ id: product.id }) }}">
+
+                                            {% if app.session.get("cart")[product.id] is not defined %}
+
+                                                <input class="quantity form-control" name="quantity" type="number"
+                                                       value="1">
+                                                <button data-product="{{ product.id }}"
+                                                        class="mt-2 addCartButton btn btn-dark" type="submit">
+                                                    AJOUTER
+                                                </button>
+                                            {% else %}
+                                                <input class="quantity form-control" name="quantity" type="number"
+                                                       value="{{ app.session.get("cart")[product.id] }}">
+                                                <button data-product="{{ product.id }}"
+                                                        class="mt-2 addCartButton btn btn-dark" type="submit">
+                                                    MODIFIER
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
