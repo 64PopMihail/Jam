@@ -9,6 +9,9 @@
     },
     "license": "UNLICENSED",
     "private": true,
+    "watch": {
+        "test": "{src,test}/*.js"
+    },
     "scripts": {
         "dev-server": "encore dev-server",
         "dev": "encore dev",

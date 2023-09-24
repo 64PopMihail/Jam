@@ -195,9 +195,6 @@
     "psr/cache": {
         "version": "3.0.0"
     },
-    "psr/clock": {
-        "version": "1.0.0"
-    },
     "psr/container": {
         "version": "2.0.2"
     },
