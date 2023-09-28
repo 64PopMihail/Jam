@@ -25,9 +25,11 @@ RUN apt-get update && \
 
 RUN docker-php-ext-install pdo pdo_mysql
 
-WORKDIR /var/www/html
+WORKDIR /srv/www/
 
-COPY . .
+COPY conf.d/app.ini $PHP_INI_DIR/conf.d/app.ini
+
+COPY ../.. .
 
 EXPOSE 9000
 
