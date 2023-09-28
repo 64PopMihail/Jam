@@ -2,17 +2,18 @@ version: '3'
 services:
   php:
     build:
-      context: . # Répertoire actuel (où se trouve votre Dockerfile PHP)
+      context: ./docker/php-fpm # Répertoire actuel (où se trouve votre Dockerfile PHP)
     volumes:
-      - .:/var/www/html
+      - .:/srv/www:cached
+      - ./vendor:/srv/www/vendor:cached
+      - ./node_modules:/srv/www/node_modules:cached
   nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+    build:
+      context: ./docker/nginx
     depends_on:
       - php
+    volumes:
+      - ./public:/srv/www/public:cached
   mysql:
     image: mysql:latest
     ports:
