@@ -9,8 +9,8 @@ docker-compose.override.yml
 /vendor/
 ###< symfony/framework-bundle ###
 
-/docker/php-fpm/certs/*
-
+docker/php-fpm/certs/*.crt
+docker/php-fpm/certs/*.pem
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
