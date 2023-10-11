@@ -1,23 +1,23 @@
 version: '3.7'
 
-services:
+#services:
 # Décommentez si vous êtes sur mac m1/m2
 #   php:
 #        build:
 #            dockerfile: Dockerfile-arm
-        volumes:
-            - .:/srv/www:cached
-            - ./vendor:/srv/www/vendor:cached
-            - ./node_modules:/srv/www/node_modules:cached
- #       environment:
- #           NODE_EXTRA_CA_CERTS: /usr/lib/ssl/cert.pem
-    mysql:
- #       image: arm64v8/mysql:oracle
-        ports:
-            - 3306:3306
-    nginx:
-        ports:
-            - 80:80
+#       volumes:
+#            - .:/srv/www:cached
+#            - ./vendor:/srv/www/vendor:cached
+#            - ./node_modules:/srv/www/node_modules:cached
+#       environment:
+#           NODE_EXTRA_CA_CERTS: /usr/lib/ssl/cert.pem
+#    mysql:
+#       image: arm64v8/mysql:oracle
+#        ports:
+#           - 3306:3306
+#   nginx:
+#       ports:
+#           - 80:80
 
 
 

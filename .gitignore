@@ -41,3 +41,6 @@ yarn-error.log
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/.gitignore
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
