@@ -1,4 +1,6 @@
-FROM php:8.2-fpm
+ARG PHP_VERSION=8.2
+
+FROM php:${PHP_VERSION}-fpm
 
 COPY certs /usr/local/share/ca-certificates
 COPY certs /usr/lib/ssl
@@ -9,6 +11,7 @@ RUN update-ca-certificates \
     unzip \
     libzip-dev \
     libicu-dev \
+    && apt-get update && apt-get install -y openssl && apt-get install acl \
     && docker-php-ext-configure intl \
     && docker-php-ext-install zip \
     intl \
