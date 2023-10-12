@@ -12,6 +12,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $userPasswordHasherInterface;
     public function __construct (UserPasswordHasherInterface $userPasswordHasherInterface)
     {
         $this->userPasswordHasherInterface = $userPasswordHasherInterface;
@@ -112,6 +113,17 @@ class AppFixtures extends Fixture
             )
         );
         $user->setRoles(["ROLE_ADMIN"]);
+        $manager->persist($user);
+        $manager->flush();
+
+        $user = new User();
+        $user->setEmail("pop.mickael@gmail.com");
+        $user->setPassword(
+            $this->userPasswordHasherInterface->hashPassword(
+                $user, "ilovejam"
+            )
+        );
+        $user->setRoles(["ROLE_USER"]);
         $manager->persist($user);
         $manager->flush();
     }

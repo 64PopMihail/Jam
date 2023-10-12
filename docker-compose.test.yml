@@ -1,0 +1,7 @@
+version: '3'
+services:
+  mysql-test:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: jam_test
+      MYSQL_ROOT_PASSWORD: root

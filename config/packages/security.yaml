@@ -1,6 +1,4 @@
 security:
-    enable_authenticator_manager: true
-   
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -9,10 +7,13 @@ security:
             lazy: true
                 # provider that you set earlier inside providers
             provider: app_user_provider
-            form_login:
-                login_path: login
-                check_path: login
-                default_target_path: home
+            json_login:
+                check_path: /auth # The name in routes.yaml is enough for mapping
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
 
             logout:
                 path: logout
@@ -43,6 +44,7 @@ security:
 
     access_control:
      - { path: ^/admin, roles: ROLE_ADMIN }
+     - { path: ^/auth, roles: PUBLIC_ACCESS }
 when@test:
     security:
       

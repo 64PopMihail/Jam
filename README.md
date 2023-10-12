@@ -12,10 +12,10 @@ Partie back-end d'un projet e-commerce de confitures avec panier, espace d'admin
 
 Si ZSCALER, copiez les certificats dans le répertoire du projet :
 ```bash
-security export -t certs -f pemseq -k /Library/Keychains/System.keychain -o certs/certs.crt
-cp certs/certs.crt certs/certs.pem
-cp certs/certs.crt certs/cert.crt  
-cp certs/certs.crt certs/cert.pem
+security export -t certs -f pemseq -k /Library/Keychains/System.keychain -o /docker/php-fpm/certs/certs.crt
+cp docker/php-fpm/certs/certs.crt docker/php-fpm/certs/certs.pem
+cp docker/php-fpm/certs/certs.crt docker/php-fpm/certs/cert.crt  
+cp docker/php-fpm/certs/certs.crt docker/php-fpm/certs/cert.pem
 ```
 
 

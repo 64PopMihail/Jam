@@ -2,10 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use App\Exception\ProductNotFoundException;
+
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'product:item'],
+        ),
+        new GetCollection(normalizationContext: ['groups' => 'product:list'])
+    ],
+)]
+
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -13,23 +28,29 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['product:list', 'product:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['product:list', 'product:item'])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['product:list', 'product:item'])]
     private $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['product:list', 'product:item'])]
     private $image;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['product:list', 'product:item'])]
     private $price;
 
     private int $quantity=0;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
+    #[Groups(['product:list', 'product:item'])]
     private $categories;
 
     public function __construct()

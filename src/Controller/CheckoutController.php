@@ -87,8 +87,8 @@ class CheckoutController extends AbstractController
         $session = \Stripe\Checkout\Session::create([
             'line_items' => $stripe_items,
             'mode' => 'payment',
-            'success_url' => 'http://localhost:8000/checkout_success/' . $token,
-            'cancel_url' => 'http://localhost:8000/checkout_error'
+            'success_url' => 'http://localhost:80/checkout_success/' . $token,
+            'cancel_url' => 'http://localhost:80/checkout_error'
         ]);
 
         return $this->redirect($session->url, 303);
