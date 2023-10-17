@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class CheckoutController extends AbstractController
 {
@@ -41,7 +43,7 @@ class CheckoutController extends AbstractController
     }
 
     #[IsGranted("ROLE_USER")]
-    #[Route('/checkout', name: 'checkout')]
+    #[Route('/checkout222', name: 'checkout222')]
     public function index(EntityManagerInterface $manager, ProductRepository $productRepo, SessionInterface $session)
     {
         $tokenProvider = $this->container->get('security.csrf.token_manager');
@@ -58,7 +60,7 @@ class CheckoutController extends AbstractController
 
         foreach ($cart as $key => $quantity) {
             $product = $productRepo->find($key);
-            $line = new LineOrder;
+            $line = new LineOrder();
             $line->setProduct($product);
             $line->setQuantity($quantity);
             $line->setSubtotal($quantity * $product->getPrice());
@@ -83,14 +85,14 @@ class CheckoutController extends AbstractController
         $manager->flush();
         $session->set("order_waiting", $order->getId());
 
-        \Stripe\Stripe::setApiKey($_ENV["STRIPE_API_KEY"]);
-        $session = \Stripe\Checkout\Session::create([
+        Stripe::setApiKey($_ENV["STRIPE_API_KEY"]);
+        $session = Session::create([
             'line_items' => $stripe_items,
             'mode' => 'payment',
             'success_url' => 'http://localhost:80/checkout_success/' . $token,
             'cancel_url' => 'http://localhost:80/checkout_error'
         ]);
-
+        //dd($token,$stripe_items, $session, $session->url);
         return $this->redirect($session->url, 303);
     }
 }
