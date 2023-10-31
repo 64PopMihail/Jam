@@ -42,9 +42,6 @@ class SearchController extends AbstractController
             "products" => $products
         ]);
     }
-
-  
-    
 }
 
 
