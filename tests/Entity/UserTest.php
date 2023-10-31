@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Entity;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use App\Exception\EmailAlreadyExistsException;
+use App\Entity\User;
 
 class UserTest extends ApiTestCase
 {
@@ -67,10 +69,84 @@ class UserTest extends ApiTestCase
     {
         $body = [];
         $response = static::createClient()->request('POST', '/auth', ['json' => $body ?: [
-            'email' => 'thereseleduc@proot.com',
+            'email' => 'thereseleducblabla@proot.com',
             'password' => 'ilovejam',
         ]]);
         
         $this->assertResponseStatusCodeSame('401');
+    }
+
+    public function testValidRegistation(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => 'thereseleduc@proot.com',
+            'plainPassword' => 'ilovejAm!82',
+            'agreedTerms' => true
+        ]]);
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertMatchesResourceItemJsonSchema(User::class);
+    }
+
+    public function testRegistationWithAlreadyExistingMail(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => 'admin@admin.com',
+            'plainPassword' => 'ilovejAm!82',
+            'agreedTerms' => true
+        ]]);
+
+        $this->assertResponseStatusCodeSame(500);
+        $this->assertJsonContains(["hydra:description" => "Un compte utilise déjà cette adresse email."]);
+    }
+
+    public function testRegistationWithInvalidEmail(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => 'admin@admin',
+            'plainPassword' => 'ilovejAm!82',
+            'agreedTerms' => true
+        ]]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    public function testRegistationWithBlankEmail(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => '',
+            'plainPassword' => 'ilovejAm!82',
+            'agreedTerms' => true
+        ]]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    public function testRegistationWithoutAgreeingTerms(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => 'admin@admin.com',
+            'plainPassword' => 'ilovejAm!82',
+            'agreedTerms' => false
+        ]]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    public function testRegistationWithAnInvalidPassword(): void
+    {
+        $body = [];
+        $response = static::createClient()->request('POST', '/api/register', ['json' => $body ?: [
+            'email' => 'admin@admin.com',
+            'plainPassword' => 'ilovejam',
+            'agreedTerms' => true
+        ]]);
+
+        $this->assertResponseStatusCodeSame(422);
     }
 }

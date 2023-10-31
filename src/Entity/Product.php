@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -16,12 +20,19 @@ use App\Exception\ProductNotFoundException;
     operations: [
         new Get(
             normalizationContext: ['groups' => 'product:item'],
+            denormalizationContext: ['groups' => 'product:list']
         ),
-        new GetCollection(normalizationContext: ['groups' => 'product:list'])
+        new GetCollection(
+            normalizationContext: ['groups' => 'product:list'],
+            denormalizationContext: ['groups' => 'product:list']
+        )
     ],
+    normalizationContext: ['groups' => ['product']],
+    denormalizationContext: ['groups' => ['product']],
 )]
 
-
+#[ApiFilter(OrderFilter::class, properties: ['name','price'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {
@@ -33,6 +44,7 @@ class Product
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['product:list', 'product:item'])]
+    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -51,6 +63,7 @@ class Product
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
     #[Groups(['product:list', 'product:item'])]
+    #[ApiFilter(SearchFilter::class, properties: ['categories'])]
     private $categories;
 
     public function __construct()
