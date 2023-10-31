@@ -20,9 +20,15 @@ use App\Exception\ProductNotFoundException;
     operations: [
         new Get(
             normalizationContext: ['groups' => 'product:item'],
+            denormalizationContext: ['groups' => 'product:list']
         ),
-        new GetCollection(normalizationContext: ['groups' => 'product:list'])
+        new GetCollection(
+            normalizationContext: ['groups' => 'product:list'],
+            denormalizationContext: ['groups' => 'product:list']
+        )
     ],
+    normalizationContext: ['groups' => ['product']],
+    denormalizationContext: ['groups' => ['product']],
 )]
 
 #[ApiFilter(OrderFilter::class, properties: ['name','price'], arguments: ['orderParameterName' => 'order'])]
